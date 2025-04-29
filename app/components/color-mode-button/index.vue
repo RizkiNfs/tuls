@@ -14,7 +14,7 @@ const isDark = computed({
 <template>
   <client-only v-if="!colorMode?.forced">
     <u-button
-      :icon="isDark ? 'iconamoon:mode-dark-duotone' : 'iconamoon:mode-dark-duotone'"
+      :icon="isDark ? 'iconamoon:mode-light-duotone' : 'iconamoon:mode-dark-duotone'"
       color="neutral"
       variant="ghost"
       @click="isDark = !isDark"

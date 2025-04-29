@@ -12,11 +12,15 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.2.17",
     "@nuxt/ui": "^3.0.2",
     "@tiptap/core": "^3.0.0-beta.3",
     "@tiptap/starter-kit": "^3.0.0-beta.3",
     "@tiptap/vue-3": "^3.0.0-beta.3",
-    "nuxt": "^3.16.2"
+    "@vueuse/nuxt": "^13.1.0",
+    "nuxt": "^3.16.2",
+    "nuxt-pglite": "^0.2.9",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.12.0",

@@ -1,34 +1,31 @@
 <script setup lang="ts">
-const notes = [
-  'Resume',
-  'Intervew preparation',
-]
+interface Note {
+  id: string
+  title: string
+  content_html: string
+  content_json: string
+}
+
+const data = useLiveQuery<Note>('SELECT * FROM notes;')
 </script>
 
 <template>
   <div class="flex">
     <aside class="w-[264px] p-4 border-r min-h-screen fixed left-0 top-0">
-      <p class="text-xl font-semibold">
+      <nuxt-link to="/" class="text-xl font-semibold">
         Tuls
-      </p>
+      </nuxt-link>
       <div class="mt-6 mb-8">
-        <u-button
-          block
-          variant="outline"
-          to="/"
-          icon="iconamoon:sign-plus-duotone"
-        >
-          New Note
-        </u-button>
+        <new-note-button />
       </div>
       <div class="">
         <p class="font-semibold">
           Recent
         </p>
         <ul class="mt-2">
-          <li v-for="note in notes" :key="note" class="not-last:mb-1 flex items-center min-h-8">
-            <nuxt-link to="/" class="flex-1 hover:text-primary">
-              {{ note }}
+          <li v-for="note in data.rows.value" :key="note.id" class="not-last:mb-1 flex items-center min-h-8">
+            <nuxt-link :to="`/notes/${note.id}`" class="flex-1 hover:text-primary">
+              {{ note.title }}
             </nuxt-link>
             <u-dropdown-menu
               :items="[
