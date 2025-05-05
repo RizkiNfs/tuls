@@ -33,5 +33,9 @@ export default defineNuxtConfig({
     },
   },
 
+  pages: {
+    pattern: ['**/*.vue', '!**/*.spec.*', '!components/**.*'],
+  },
+
   compatibilityDate: '2025-04-27',
 })

@@ -9,6 +9,12 @@ export default defineAppConfig({
     button: {
       defaultVariants: {
         size: 'xl',
+        variant: 'soft',
+      },
+    },
+    input: {
+      defaultVariants: {
+        size: 'xl',
       },
     },
   },
