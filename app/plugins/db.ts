@@ -1,7 +1,16 @@
+import type { PgliteDatabase } from 'drizzle-orm/pglite'
+import type { Schema } from '../db/schema'
+import { drizzle } from 'drizzle-orm/pglite'
+import { schema } from '../db/schema'
+
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hooks.hookOnce('pglite', async (pg) => {
+
+    const db = drizzle(pg as any, { schema })
+    nuxtApp.provide('db', db)
+
     await pg.exec(`
-        CREATE TABLE IF NOT EXISTS notes (
+      CREATE TABLE IF NOT EXISTS notes (
         id UUID PRIMARY KEY,
         title VARCHAR(255),
         content_json TEXT,
@@ -13,10 +22,16 @@ export default defineNuxtPlugin((nuxtApp) => {
 
       CREATE TABLE IF NOT EXISTS model_providers (
         id UUID PRIMARY KEY,
-        name VARCHAR(24),
+        name VARCHAR(255),
         url TEXT,
         api_key TEXT
       );
     `)
   })
 })
+
+declare module '#app' {
+  interface NuxtApp {
+    $db: PgliteDatabase<Schema>
+  }
+}

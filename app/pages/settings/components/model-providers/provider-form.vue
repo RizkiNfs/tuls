@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { ModelProvider } from '~/db/schema'
 import * as v from 'valibot'
+import { modelProviders } from '~/db/schema'
 
 const emit = defineEmits<{
   submit: []
@@ -21,14 +23,18 @@ const initialState = {
 }
 
 const state = reactive<Schema>(structuredClone(initialState))
-const pg = usePGlite()
+
+const { execute: insertModelProvider } = useDB((values: ModelProvider, db) => db.insert(modelProviders).values(values))
 
 async function handleSubmit(event: FormSubmitEvent<Schema>) {
   const id = crypto.randomUUID()
-  await pg.query(
-    `INSERT INTO model_providers (id, name, url, api_key) VALUES ($1,$2,$3,$4);`,
-    [id, event.data.name, event.data.url, event.data.apiKey],
-  )
+  await insertModelProvider({
+    id,
+    name: event.data.name,
+    url: event.data.url,
+    apiKey: event.data.apiKey,
+  })
+
   Object.assign(state, structuredClone(initialState))
 
   emit('submit')

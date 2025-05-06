@@ -1,12 +1,7 @@
 <script setup lang="ts">
-interface Note {
-  id: string
-  title: string
-  content_html: string
-  content_json: string
-}
+import type { Note } from '~/db/schema'
 
-const data = useLiveQuery<Note>('SELECT * FROM notes;')
+const data = useLiveQuery<Required<Note>>('SELECT * FROM notes;')
 </script>
 
 <template>

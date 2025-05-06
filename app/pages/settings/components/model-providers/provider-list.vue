@@ -25,9 +25,11 @@ const data = useLiveQuery<Provider>('SELECT * FROM model_providers;')
       </template>
       <template #default>
         <div>
-          <h3 class="font-semibold">Models</h3>
+          <h3 class="font-semibold">
+            Models
+          </h3>
           <ul class="mt-2">
-            <li class="hover:bg-primary-50 rounded flex items-center justify-between">
+            <li class="rounded flex items-center justify-between">
               <p class="p-1 px-2">
                 gemini-2.0-flash-lite
               </p>

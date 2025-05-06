@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import { notes } from '~/db/schema'
+
 const router = useRouter()
-const pg = usePGlite()
+
+const { execute: insertNote } = useDB((id: string, db) => db.insert(notes).values({
+  id,
+  title: 'Untitled note',
+  contentHTML: '',
+  contentJSON: '',
+}))
+
 async function createNote() {
   const id = crypto.randomUUID()
-  await pg.query(
-    `INSERT INTO notes (id, title, content_json, content_html) VALUES ($1,$2,$3,$4);`,
-    [id, 'Untitled note', '', ''],
-  )
+  await insertNote(id)
   router.push(`/notes/${id}`)
 }
 </script>

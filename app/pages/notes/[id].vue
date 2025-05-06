@@ -1,28 +1,43 @@
 <script setup lang="ts">
+import type { Note } from '~/db/schema'
+import { eq } from 'drizzle-orm'
+import { notes } from '~/db/schema'
+
 const route = useRoute()
-const pg = usePGlite()
 
-interface Note {
-  id: string
-  title: string
-  content_html: string
-  content_json: string
+const id = route.params.id as string
+
+const { execute: selectNote, result: note } = useDB((id: string, db) => db
+  .query
+  .notes
+  .findFirst({ where: eq(notes.id, id) }),
+)
+
+await selectNote(id)
+
+const { execute: updateContent } = useDB((payload: { id: string, values: Omit<Note, 'id'> }, db) => db
+  .update(notes)
+  .set(payload.values)
+  .where(eq(notes.id, payload.id)),
+)
+
+async function handleUpdateContent({ html, json }: { html: string, json: string }) {
+  await updateContent({
+    id,
+    values: {
+      contentHTML: html,
+      contentJSON: json,
+    },
+  })
 }
 
-const [note] = (await pg.query<Note>(`SELECT * FROM notes WHERE id=$1`, [route.params.id])).rows
-
-function handleUpdateContent({ html, json }: { html: string, json: string }) {
-  pg.query(
-    `UPDATE notes SET content_html=$2, content_json=$3 WHERE id = $1;`,
-    [note?.id, html, json],
-  )
-}
-
-function handleUpdateTitle(title: string) {
-  pg.query(
-    `UPDATE notes SET title=$2 WHERE id = $1;`,
-    [note?.id, title],
-  )
+async function handleUpdateTitle(title: string) {
+  await updateContent({
+    id,
+    values: {
+      title,
+    },
+  })
 }
 </script>
 
@@ -31,8 +46,8 @@ function handleUpdateTitle(title: string) {
     <note-editor
       v-if="note?.id"
       :key="note.id"
-      :title="note?.title"
-      :content="note?.content_html"
+      :title="note?.title || ''"
+      :content="note?.contentHTML || ''"
       @update-content="handleUpdateContent"
       @update-title="handleUpdateTitle"
     />
