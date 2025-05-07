@@ -6,7 +6,10 @@ const props = defineProps<{
   providerId: string
 }>()
 
-const { execute: insertModel } = useDB(db => (values: Model) => db.insert(models).values(values))
+const { execute: insertModel } = useDB(
+  db => (values: Model) => db.insert(models).values(values),
+  { publish: ['db:table:models'] },
+)
 
 const model = ref('')
 

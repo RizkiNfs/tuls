@@ -1,15 +1,22 @@
 <script setup lang="ts">
-const data = useLiveQuery('SELECT * FROM model_providers;')
+const { execute: selectModels, result } = useDB(
+  db => () => db?.query.models.findMany(),
+  { subscribe: ['db:table:models'] },
+)
+
 const options = computed(() => {
-  return data?.rows?.value?.map((i: any) => i.name)
+  return result?.value.map(i => i.name)
 })
+
+await selectModels()
 </script>
 
 <template>
-  <u-select-menu class="min-w-[150px]" default-value="Open AI" :items="options">
+  <u-select-menu class="min-w-[150px]" placeholder="Select Model" :items="options">
     <template #content-bottom>
       <hr>
       <u-button
+        to="/settings"
         icon="iconamoon:sign-plus-duotone"
         color="neutral"
         variant="ghost"

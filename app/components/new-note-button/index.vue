@@ -8,7 +8,9 @@ const { execute: insertNote } = useDB(db => (id: string) => db.insert(notes).val
   title: 'Untitled note',
   contentHTML: '',
   contentJSON: '',
-}))
+}), {
+  publish: ['db:insert:notes'],
+})
 
 async function createNote() {
   const id = crypto.randomUUID()

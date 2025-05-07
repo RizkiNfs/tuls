@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import ModelForm from './model-form.vue'
 
-const { execute: selectModelProviders, result } = useDB(db => () => {
-  return db?.query.modelProviders.findMany({ with: { models: true } })
-})
+const { execute: selectModelProviders, result } = useDB(
+  db => () => db?.query.modelProviders.findMany({ with: { models: true } }),
+  { subscribe: ['db:table:modelProviders', 'db:table:models'] },
+)
 await selectModelProviders()
 </script>
 

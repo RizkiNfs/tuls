@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import type { Note } from '~/db/schema'
+const { execute: selectNotes, result } = useDB(
+  db => () => db?.query.notes.findMany(),
+  { subscribe: ['db:insert:notes', 'db:update:notes'] },
+)
 
-const data = useLiveQuery<Required<Note>>('SELECT * FROM notes;')
+await selectNotes()
 </script>
 
 <template>
@@ -18,7 +21,7 @@ const data = useLiveQuery<Required<Note>>('SELECT * FROM notes;')
           Recent
         </p>
         <ul class="mt-2">
-          <li v-for="note in data.rows.value" :key="note.id" class="not-last:mb-1 flex items-center min-h-8">
+          <li v-for="note in result" :key="note.id" class="not-last:mb-1 flex items-center min-h-8">
             <nuxt-link :to="`/notes/${note.id}`" class="flex-1 hover:text-primary">
               {{ note.title }}
             </nuxt-link>
@@ -45,18 +48,7 @@ const data = useLiveQuery<Required<Note>>('SELECT * FROM notes;')
     </aside>
     <div class="flex-1 ml-[264px]">
       <header class="p-2 flex justify-between  sticky top-0">
-        <u-select-menu class="min-w-[150px]" default-value="Open AI" :items="['Gemini', 'Open AI']">
-          <template #content-bottom>
-            <hr>
-            <u-button
-              icon="iconamoon:sign-plus-duotone"
-              color="neutral"
-              variant="ghost"
-            >
-              add model
-            </u-button>
-          </template>
-        </u-select-menu>
+        <model-picker />
         <div>
           <color-mode-button />
           <u-button

@@ -1,7 +1,5 @@
 import mitt from 'mitt'
 
-type EventType = string
-
 const eventBus = mitt<Record<EventType, unknown>>()
 
 export default defineNuxtPlugin(() => {
@@ -11,3 +9,9 @@ export default defineNuxtPlugin(() => {
     },
   }
 })
+
+export type EventType = 'db:table:modelProviders'
+  | 'db:table:models'
+  | 'db:table:notes'
+  | 'db:insert:notes'
+  | 'db:update:notes'

@@ -5,6 +5,8 @@ import { notes } from '~/db/schema'
 
 const route = useRoute()
 
+const { $eventBus } = useNuxtApp()
+
 const id = route.params.id as string
 
 const { execute: selectNote, result: note } = useDB(db => (id: string) => db
@@ -38,6 +40,7 @@ async function handleUpdateTitle(title: string) {
       title,
     },
   })
+  $eventBus.emit('db:update:notes')
 }
 </script>
 
