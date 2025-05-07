@@ -24,7 +24,7 @@ const initialState = {
 
 const state = reactive<Schema>(structuredClone(initialState))
 
-const { execute: insertModelProvider } = useDB((values: ModelProvider, db) => db.insert(modelProviders).values(values))
+const { execute: insertModelProvider } = useDB(db => (values: ModelProvider) => db.insert(modelProviders).values(values))
 
 async function handleSubmit(event: FormSubmitEvent<Schema>) {
   const id = crypto.randomUUID()

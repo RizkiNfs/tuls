@@ -3,7 +3,7 @@ import { notes } from '~/db/schema'
 
 const router = useRouter()
 
-const { execute: insertNote } = useDB((id: string, db) => db.insert(notes).values({
+const { execute: insertNote } = useDB(db => (id: string) => db.insert(notes).values({
   id,
   title: 'Untitled note',
   contentHTML: '',

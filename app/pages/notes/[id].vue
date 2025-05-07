@@ -7,7 +7,7 @@ const route = useRoute()
 
 const id = route.params.id as string
 
-const { execute: selectNote, result: note } = useDB((id: string, db) => db
+const { execute: selectNote, result: note } = useDB(db => (id: string) => db
   .query
   .notes
   .findFirst({ where: eq(notes.id, id) }),
@@ -15,7 +15,7 @@ const { execute: selectNote, result: note } = useDB((id: string, db) => db
 
 await selectNote(id)
 
-const { execute: updateContent } = useDB((payload: { id: string, values: Omit<Note, 'id'> }, db) => db
+const { execute: updateContent } = useDB(db => (payload: { id: string, values: Omit<Note, 'id'> }) => db
   .update(notes)
   .set(payload.values)
   .where(eq(notes.id, payload.id)),
