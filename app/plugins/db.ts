@@ -5,7 +5,6 @@ import { schema } from '../db/schema'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.hooks.hookOnce('pglite', async (pg) => {
-
     const db = drizzle(pg as any, { schema })
     nuxtApp.provide('db', db)
 
@@ -25,6 +24,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         name VARCHAR(255),
         url TEXT,
         api_key TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS models (
+        id UUID PRIMARY KEY,
+        name VARCHAR(255),
+        provider_id UUID
       );
     `)
   })

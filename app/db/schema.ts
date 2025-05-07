@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm'
 import { boolean, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 
 export const notes = pgTable('notes', {
@@ -18,10 +19,30 @@ export const modelProviders = pgTable('model_providers', {
   apiKey: text('api_key'),
 })
 
+export const models = pgTable('models', {
+  id: uuid().primaryKey(),
+  name: varchar({ length: 255 }),
+  providerId: uuid('provider_id'),
+})
+
+export type Model = typeof models.$inferSelect
+
+export const modelProvidersRelation = relations(modelProviders, ({ many }) => ({
+  models: many(models),
+}))
+
+export const modelsRelations = relations(models, ({ one }) => ({
+  provider: one(modelProviders, { fields: [models.providerId], references: [modelProviders.id] }),
+}))
+
 export type ModelProvider = typeof modelProviders.$inferInsert
 
 export const schema = {
   notes,
+  modelProviders,
+  modelProvidersRelation,
+  models,
+  modelsRelations,
 }
 
 export type Schema = typeof schema

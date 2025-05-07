@@ -1,17 +1,16 @@
 <script setup lang="ts">
-interface Provider {
-  id: string
-  name: string
-  url: string
-  api_key: string
-}
-const data = useLiveQuery<Provider>('SELECT * FROM model_providers;')
+import ModelForm from './model-form.vue'
+
+const { execute: selectModelProviders, result } = useDB(db => () => {
+  return db?.query.modelProviders.findMany({ with: { models: true } })
+})
+await selectModelProviders()
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-4">
     <u-card
-      v-for="provider in data.rows.value"
+      v-for="provider in result"
       :key="provider.id"
     >
       <template #header>
@@ -29,17 +28,18 @@ const data = useLiveQuery<Provider>('SELECT * FROM model_providers;')
             Models
           </h3>
           <ul class="mt-2">
-            <li class="rounded flex items-center justify-between">
+            <li
+              v-for="model in provider.models"
+              :key="model.id"
+              class="rounded flex items-center justify-between"
+            >
               <p class="p-1 px-2">
-                gemini-2.0-flash-lite
+                {{ model.name }}
               </p>
               <u-button variant="ghost" icon="iconamoon:trash-duotone" />
             </li>
           </ul>
-          <div class="flex gap-4 mt-2">
-            <u-input size="xl" class="flex-1" />
-            <u-button icon="iconamoon:sign-plus-duotone" variant="soft" />
-          </div>
+          <ModelForm :provider-id="provider.id" class="mt-2" />
         </div>
       </template>
     </u-card>
